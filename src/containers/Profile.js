@@ -1,6 +1,9 @@
+// src/containers/Profile.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { useHistory, Link } from 'react-router-dom';
+import { logout } from '../actions/auth';
 import '../styles/Profile.css'; // Create this file for additional styling
 
 const Profile = () => {
@@ -13,13 +16,16 @@ const Profile = () => {
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [preview, setPreview] = useState('');
+    const dispatch = useDispatch();
+    const history = useHistory();
 
     useEffect(() => {
         const fetchUserData = async () => {
             try {
+                const token = localStorage.getItem('access');
                 const response = await axios.get(`${process.env.REACT_APP_API_URL}/accounts/profile/`, {
                     headers: {
-                        'Authorization': `JWT ${localStorage.getItem('access')}`
+                        'Authorization': `Bearer ${token}` // Cambia 'JWT' por 'Bearer'
                     }
                 });
                 setFormData({
@@ -61,10 +67,11 @@ const Profile = () => {
             formDataToSend.append('profile_picture', profile_picture);
         }
         try {
+            const token = localStorage.getItem('access');
             const response = await axios.put(`${process.env.REACT_APP_API_URL}/accounts/profile/`, formDataToSend, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    'Authorization': `JWT ${localStorage.getItem('access')}`
+                    'Authorization': `Bearer ${token}` // Cambia 'JWT' por 'Bearer'
                 }
             });
             console.log('Profile updated:', response.data);
@@ -77,19 +84,25 @@ const Profile = () => {
     const onPasswordChange = async e => {
         e.preventDefault();
         try {
+            const token = localStorage.getItem('access');
             const response = await axios.post(`${process.env.REACT_APP_API_URL}/accounts/change_password/`, {
                 old_password: oldPassword,
                 new_password: newPassword
             }, {
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `JWT ${localStorage.getItem('access')}`
+                    'Authorization': `Bearer ${token}` // Cambia 'JWT' por 'Bearer'
                 }
             });
             console.log('Password updated:', response.data);
         } catch (err) {
             console.error('Error changing password:', err);
         }
+    };
+
+    const handleLogout = () => {
+        dispatch(logout());
+        history.push('/');  // Redirigir al home después del logout
     };
 
     return (
@@ -103,7 +116,7 @@ const Profile = () => {
                         <Link to="/">Home</Link>
                     </li>
                     <li>
-                        <Link to="/messages">En Directo</Link>
+                        <Link to="/messages">Crear Directos</Link>
                     </li>
                     <li>
                         <Link to="/dashboard">Puntos</Link>
@@ -112,96 +125,11 @@ const Profile = () => {
                         <Link to="/profile">Profile</Link>
                     </li>
                     <li>
-                        <Link to="/logout">Logout</Link>
+                        <button onClick={handleLogout}>Logout</button>
                     </li>
                 </ul>
             </nav>
             <div className="content">
-                <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-                    <div className="container-fluid">
-                        <a className="navbar-brand" href="#">Navbar</a>
-                        <button className="navbar-toggler" type="button" data-mdb-toggle="collapse"
-                            data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                            aria-label="Toggle navigation">
-                            <i className="fas fa-bars text-light"></i>
-                        </button>
-
-                        <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                            <ul className="navbar-nav me-auto d-flex flex-row mt-3 mt-lg-0">
-                                <li className="nav-item text-center mx-2 mx-lg-1">
-                                    <a className="nav-link active" aria-current="page" href="#!">
-                                        <div>
-                                            <i className="fas fa-home fa-lg mb-1"></i>
-                                        </div>
-                                        Home
-                                    </a>
-                                </li>
-                                <li className="nav-item text-center mx-2 mx-lg-1">
-                                    <a className="nav-link" href="#!">
-                                        <div>
-                                            <i className="far fa-envelope fa-lg mb-1"></i>
-                                            <span className="badge rounded-pill badge-notification bg-danger">11</span>
-                                        </div>
-                                        Link
-                                    </a>
-                                </li>
-                                <li className="nav-item text-center mx-2 mx-lg-1">
-                                    <a className="nav-link disabled" aria-disabled="true" href="#!">
-                                        <div>
-                                            <i className="far fa-envelope fa-lg mb-1"></i>
-                                            <span className="badge rounded-pill badge-notification bg-warning">11</span>
-                                        </div>
-                                        Disabled
-                                    </a>
-                                </li>
-                                <li className="nav-item dropdown text-center mx-2 mx-lg-1">
-                                    <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                        data-mdb-toggle="dropdown" aria-expanded="false">
-                                        <div>
-                                            <i className="far fa-envelope fa-lg mb-1"></i>
-                                            <span className="badge rounded-pill badge-notification bg-primary">11</span>
-                                        </div>
-                                        Dropdown
-                                    </a>
-                                    <ul className="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
-                                        <li><a className="dropdown-item" href="#">Action</a></li>
-                                        <li><a className="dropdown-item" href="#">Another action</a></li>
-                                        <li><hr className="dropdown-divider" /></li>
-                                        <li><a className="dropdown-item" href="#">Something else here</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-
-                            <ul className="navbar-nav ms-auto d-flex flex-row mt-3 mt-lg-0">
-                                <li className="nav-item text-center mx-2 mx-lg-1">
-                                    <a className="nav-link" href="#!">
-                                        <div>
-                                            <i className="fas fa-bell fa-lg mb-1"></i>
-                                            <span className="badge rounded-pill badge-notification bg-info">11</span>
-                                        </div>
-                                        Messages
-                                    </a>
-                                </li>
-                                <li className="nav-item text-center mx-2 mx-lg-1">
-                                    <a className="nav-link" href="#!">
-                                        <div>
-                                            <i className="fas fa-globe-americas fa-lg mb-1"></i>
-                                            <span className="badge rounded-pill badge-notification bg-success">11</span>
-                                        </div>
-                                        News
-                                    </a>
-                                </li>
-                            </ul>
-
-                            <form className="d-flex input-group w-auto ms-lg-3 my-3 my-lg-0">
-                                <input type="search" className="form-control" placeholder="Search" aria-label="Search" />
-                                <button className="btn btn-primary" type="button" data-mdb-ripple-color="dark">
-                                    Search
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </nav>
                 <div className="container mt-5">
                     <div className="row justify-content-center">
                         <div className="col-md-6">
