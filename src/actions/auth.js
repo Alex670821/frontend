@@ -153,6 +153,8 @@ export const signup = (first_name, last_name, email, password, re_password) => a
     }
 };
 
+
+
 export const verify = (uid, token) => async dispatch => {
     const config = {
         headers: {

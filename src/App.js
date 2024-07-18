@@ -1,4 +1,4 @@
-// src/App.js
+// frontend/src/App.js
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
@@ -11,7 +11,8 @@ import ResetPassword from './containers/ResetPassword';
 import ResetPasswordConfirm from './containers/ResetPasswordConfirm';
 import Profile from './containers/Profile';  // Importar el componente Profile
 import SubscriptionForm from './components/SubscriptionForm'; // Importar el componente SubscriptionForm
-import Rewards from './containers/Rewards'; 
+import Rewards from './containers/Rewards';
+import ViewDirecto from './containers/ViewDirecto'; // Importar el nuevo componente ViewDirecto
 
 import { Provider } from 'react-redux';
 import store from './store';
@@ -33,6 +34,7 @@ const App = () => (
                     <Route exact path='/activate/:uid/:token' component={Activate} />
                     <Route exact path='/profile' component={Profile} />
                     <Route path="/rewards" component={Rewards} />
+                    <Route path="/view-directo" component={ViewDirecto} /> {/* Nueva ruta para ViewDirecto */}
                 </Switch>
             </Layout>
         </Router>

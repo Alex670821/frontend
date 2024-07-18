@@ -1,4 +1,4 @@
-/* src/styles/Home.css */
+/* frontend/src/styles/Home.css */
 .home-container {
     display: flex;
     height: 100vh;
@@ -101,4 +101,22 @@
 
 input[type="search"] {
     margin-right: 10px;
+}
+
+.video-container {
+    margin-top: 20px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.video-container h2 {
+    margin-bottom: 10px;
+}
+
+.video-container iframe {
+    width: 100%;
+    height: 480px;
+    border-radius: 10px;
 }
