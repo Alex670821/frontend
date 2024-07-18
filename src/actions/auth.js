@@ -1,4 +1,5 @@
 // frontend/src/actions/auth.js
+
 import axios from 'axios';
 import {
     LOGIN_SUCCESS,
@@ -10,8 +11,8 @@ import {
     LOGOUT,
     PASSWORD_RESET_SUCCESS,
     PASSWORD_RESET_FAIL,
-    PASSWORD_RESET_CONFIRM_FAIL,
     PASSWORD_RESET_CONFIRM_SUCCESS,
+    PASSWORD_RESET_CONFIRM_FAIL,
     SIGNUP_SUCCESS,
     SIGNUP_FAIL,
     ACTIVATION_SUCCESS,
@@ -40,14 +41,14 @@ export const load_user = () => async dispatch => {
         const config = {
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`, // Asegúrate de que el token esté precedido por 'Bearer'
+                'Authorization': `Bearer ${token}`,
                 'Accept': 'application/json'
             }
         };
 
         try {
             const res = await axios.get(`${process.env.REACT_APP_API_URL}/auth/users/me/`, config);
-    
+
             dispatch({
                 type: USER_LOADED_SUCCESS,
                 payload: res.data
@@ -152,8 +153,6 @@ export const signup = (first_name, last_name, email, password, re_password) => a
         });
     }
 };
-
-
 
 export const verify = (uid, token) => async dispatch => {
     const config = {
