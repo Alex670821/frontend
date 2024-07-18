@@ -21,6 +21,7 @@
   
   .chat-input {
     display: flex;
+    align-items: center; /* Asegúrate de que los elementos estén alineados verticalmente */
     padding: 10px;
     background-color: #23272a;
     border-radius: 0 0 5px 5px;
@@ -45,5 +46,11 @@
   
   .chat-input button:hover {
     background-color: #5a6fb2;
+  }
+  
+  .emoji-picker-react {
+    position: absolute;
+    bottom: 50px; /* Ajusta según sea necesario */
+    right: 20px; /* Ajusta según sea necesario */
   }
   

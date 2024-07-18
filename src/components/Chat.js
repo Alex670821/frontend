@@ -1,11 +1,13 @@
 // src/components/Chat.js
 import React, { useState, useEffect, useRef } from 'react';
 import { w3cwebsocket as W3CWebSocket } from "websocket";
+import Picker from 'emoji-picker-react';
 import '../styles/Chat.css'; // Importa los estilos CSS
 
 const Chat = ({ directoId, userEmail }) => {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const client = useRef(null);
 
   useEffect(() => {
@@ -32,14 +34,20 @@ const Chat = ({ directoId, userEmail }) => {
   const sendMessage = () => {
     const messageData = {
       user: userEmail,
-      message,
+      message: message,
     };
     console.log('Sending message:', messageData);
     client.current.send(JSON.stringify(messageData));
     
     // Actualiza el estado de los mensajes inmediatamente
-    setMessages((prevMessages) => [...prevMessages, { user: userEmail, message }]);
+    setMessages((prevMessages) => [...prevMessages, { user: userEmail, message: message }]);
     setMessage('');
+  };
+
+  const onEmojiClick = (event, emojiObject) => {
+    console.log('Selected emoji:', emojiObject);
+    setMessage(prevMessage => prevMessage + emojiObject.emoji);
+    setShowEmojiPicker(false);
   };
 
   return (
@@ -58,6 +66,8 @@ const Chat = ({ directoId, userEmail }) => {
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Type a message..."
         />
+        <button onClick={() => setShowEmojiPicker(!showEmojiPicker)}>😀</button>
+        {showEmojiPicker && <Picker onEmojiClick={onEmojiClick} />}
         <button onClick={sendMessage}>Send</button>
       </div>
     </div>
