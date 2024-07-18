@@ -32,18 +32,7 @@ const Dashboard = () => {
                 }
                 const data = await response.json();
                 setUserName(`${data.first_name} ${data.last_name}`);
-
-                // Fetch user points
-                const pointsResponse = await fetch('http://127.0.0.1:8000/accounts/user_points/', {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('access')}`,
-                    },
-                });
-                if (!pointsResponse.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const pointsData = await pointsResponse.json();
-                setPoints(pointsData.points);
+                setPoints(data.points.points);
             } catch (err) {
                 console.error('Error fetching user data:', err);
             }
