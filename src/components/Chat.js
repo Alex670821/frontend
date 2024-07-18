@@ -1,11 +1,13 @@
 // src/components/Chat.js
 import React, { useState, useEffect, useRef } from 'react';
 import { w3cwebsocket as W3CWebSocket } from "websocket";
+import Picker from 'emoji-picker-react';
 import '../styles/Chat.css'; // Importa los estilos CSS
 
 const Chat = ({ directoId, userEmail }) => {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const client = useRef(null);
 
   useEffect(() => {
@@ -42,6 +44,12 @@ const Chat = ({ directoId, userEmail }) => {
     setMessage('');
   };
 
+  const onEmojiClick = (event, emojiObject) => {
+    console.log('Selected emoji object:', emojiObject);
+    setMessage(prevMessage => prevMessage + emojiObject.emoji);
+    setShowEmojiPicker(false);
+  };
+
   return (
     <div className="chat-container">
       <div className="chat-messages">
@@ -58,6 +66,8 @@ const Chat = ({ directoId, userEmail }) => {
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Type a message..."
         />
+        <button onClick={() => setShowEmojiPicker(!showEmojiPicker)}>😀</button>
+        {showEmojiPicker && <Picker onEmojiClick={onEmojiClick} />}
         <button onClick={sendMessage}>Send</button>
       </div>
     </div>

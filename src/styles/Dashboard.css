@@ -1,8 +1,13 @@
 /* src/styles/Dashboard.css */
 .dashboard-container {
+<<<<<<< HEAD
   display: flex;
 
   height: 100vh;
+=======
+    display: flex;
+    height: 100vh;
+>>>>>>> 108780e4ac07df703711d0ea39484fcc112b574d
 }
 
 .sidebar {

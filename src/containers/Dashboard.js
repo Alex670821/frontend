@@ -19,6 +19,7 @@ const Dashboard = () => {
 
   const handleClose = () => setShow(false);
 
+<<<<<<< HEAD
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -29,6 +30,74 @@ const Dashboard = () => {
         });
         if (!response.ok) {
           throw new Error("Network response was not ok");
+=======
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/auth/users/me/', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('access')}`,
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                setUserName(`${data.first_name} ${data.last_name}`);
+                setPoints(data.points.points);
+            } catch (err) {
+                console.error('Error fetching user data:', err);
+            }
+        };
+
+        const fetchRewards = async () => {
+            try {
+                const response = await axios.get('http://127.0.0.1:8000/rewards/rewards/', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('access')}`,
+                    },
+                });
+                setRewards(response.data);
+            } catch (err) {
+                console.error('Error fetching rewards:', err);
+            }
+        };
+
+        fetchUserData();
+        fetchRewards();
+    }, []);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setPoints(prevPoints => {
+                const newPoints = prevPoints + 10;
+                setMessage(`Ganaste 10 puntos. Total de puntos: ${newPoints}`);
+                setShow(true);
+                return newPoints;
+            });
+        }, 60000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    const redeemReward = async (rewardId, pointsCost) => {
+        if (points >= pointsCost) {
+            try {
+                const response = await axios.post(`http://127.0.0.1:8000/rewards/rewards/${rewardId}/redeem/`, {}, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('access')}`,
+                        'Content-Type': 'application/json'
+                    },
+                });
+                if (response.status === 200) {
+                    setPoints(points - pointsCost);
+                }
+            } catch (err) {
+                console.error('Error redeeming reward:', err);
+            }
+        } else {
+            alert('No tienes suficientes puntos para canjear este premio.');
+>>>>>>> 108780e4ac07df703711d0ea39484fcc112b574d
         }
         const data = await response.json();
         setPoints(data.points.points);
