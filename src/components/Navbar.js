@@ -1,17 +1,39 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { logout } from "../actions/auth";
 import useSubscriptionStatus from "../hooks/SubscriptionStatus";
+import axios from 'axios';
 
 const Navbar = ({ isAuthenticated, logout }) => {
   const [redirect, setRedirect] = useState(false);
+  const [profileImage, setProfileImage] = useState(null);
   const isActiveSubscription = useSubscriptionStatus(isAuthenticated);
 
   const logoutUser = () => {
     logout();
     setRedirect(true);
   };
+
+  useEffect(() => {
+    const fetchProfileImage = async () => {
+      if (isAuthenticated) {
+        try {
+          const token = localStorage.getItem('access');
+          const response = await axios.get(`${process.env.REACT_APP_API_URL}/accounts/profile/`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          setProfileImage(`${process.env.REACT_APP_API_URL}${response.data.profile_picture}`);
+        } catch (err) {
+          console.error('Error fetching profile image:', err);
+        }
+      }
+    };
+
+    fetchProfileImage();
+  }, [isAuthenticated]);
 
   const guestLinks = () => (
     <Fragment>
@@ -47,6 +69,19 @@ const Navbar = ({ isAuthenticated, logout }) => {
           </span>
         </li>
       )}
+      <li className="nav-item">
+        <Link className="nav-link d-flex align-items-center" to="/profile">
+          {profileImage ? (
+            <img
+              src={profileImage}
+              alt="Profile"
+              style={{ width: "30px", height: "30px", borderRadius: "50%" }}
+            />
+          ) : (
+            <i className="fas fa-user-circle fa-2x"></i>
+          )}
+        </Link>
+      </li>
     </Fragment>
   );
 

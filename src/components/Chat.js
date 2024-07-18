@@ -34,18 +34,18 @@ const Chat = ({ directoId, userEmail }) => {
   const sendMessage = () => {
     const messageData = {
       user: userEmail,
-      message: message,
+      message,
     };
     console.log('Sending message:', messageData);
     client.current.send(JSON.stringify(messageData));
     
     // Actualiza el estado de los mensajes inmediatamente
-    setMessages((prevMessages) => [...prevMessages, { user: userEmail, message: message }]);
+    setMessages((prevMessages) => [...prevMessages, { user: userEmail, message }]);
     setMessage('');
   };
 
   const onEmojiClick = (event, emojiObject) => {
-    console.log('Selected emoji:', emojiObject);
+    console.log('Selected emoji object:', emojiObject);
     setMessage(prevMessage => prevMessage + emojiObject.emoji);
     setShowEmojiPicker(false);
   };
