@@ -27,7 +27,7 @@ const useSubscriptionStatus = (isAuthenticated) => {
       fetchSubscriptionStatus();
     }
   }, [isAuthenticated]);
-
+  console.log(isActiveSubscription);
   return isActiveSubscription;
 };
 
