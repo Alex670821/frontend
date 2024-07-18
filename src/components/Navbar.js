@@ -3,6 +3,8 @@ import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { logout } from "../actions/auth";
 import useSubscriptionStatus from "../hooks/SubscriptionStatus";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "../styles/Navbar.css"; // Importa el archivo CSS personalizado
 
 const Navbar = ({ isAuthenticated, logout }) => {
   const [redirect, setRedirect] = useState(false);
@@ -16,13 +18,13 @@ const Navbar = ({ isAuthenticated, logout }) => {
   const guestLinks = () => (
     <Fragment>
       <li className="nav-item">
-        <Link className="nav-link d-flex align-items-center me-3" to="/signup">
-          <i className="fas fa-bookmark pe-2"></i> Registrarse
+        <Link className="nav-link d-flex align-items-center" to="/signup">
+          <i className="fas fa-bookmark me-2"></i> Registrarse
         </Link>
       </li>
-      <li className="nav-item" style={{ width: "65px" }}>
+      <li className="nav-item">
         <Link className="nav-link d-flex align-items-center" to="/login">
-          Sign In
+          <i className="fas fa-sign-in-alt me-2"></i> Sign In
         </Link>
       </li>
     </Fragment>
@@ -30,21 +32,35 @@ const Navbar = ({ isAuthenticated, logout }) => {
 
   const authLinks = () => (
     <Fragment>
-      {!isActiveSubscription && (
+      {isActiveSubscription ? (
+        <Fragment>
+          <li className="nav-item">
+            <Link
+              className="nav-link d-flex align-items-center"
+              to="/upload-video"
+            >
+              <i className="fas fa-video me-2"></i> Crear Video
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link className="nav-link d-flex align-items-center" to="/videos">
+              <i className="fas fa-clock me-2"></i> Videos Programados
+            </Link>
+          </li>
+          <li className="nav-item">
+            <span className="nav-link d-flex align-items-center">
+              <i
+                className="fas fa-crown"
+                style={{ color: "gold", fontSize: "24px" }}
+              ></i>
+            </span>
+          </li>
+        </Fragment>
+      ) : (
         <li className="nav-item">
           <Link className="nav-link d-flex align-items-center" to="/subscribe">
-            <i className="fas fa-bookmark pe-2"></i> Suscripción
+            <i className="fas fa-bookmark me-2"></i> Suscripción
           </Link>
-        </li>
-      )}
-      {isActiveSubscription && (
-        <li className="nav-item">
-          <span className="nav-link">
-            <i
-              className="fas fa-crown"
-              style={{ color: "gold", fontSize: "24px", marginLeft: "30px" }}
-            ></i>
-          </span>
         </li>
       )}
     </Fragment>
@@ -67,23 +83,23 @@ const Navbar = ({ isAuthenticated, logout }) => {
           <button
             className="navbar-toggler"
             type="button"
-            data-mdb-toggle="collapse"
-            data-mdb-target="#navbarSupportedContent"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent"
             aria-expanded="false"
             aria-label="Toggle navigation"
           >
-            <i className="fas fa-bars"></i>
+            <span className="navbar-toggler-icon"></span>
           </button>
 
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul className="navbar-nav me-3">
+            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li className="nav-item">
                 <Link
                   className="nav-link active d-flex align-items-center"
                   to="#!"
                 >
-                  <i className="fas fa-bars pe-2"></i>Menu
+                  <i className="fas fa-bars me-2"></i> Menu
                 </Link>
               </li>
             </ul>
@@ -102,11 +118,10 @@ const Navbar = ({ isAuthenticated, logout }) => {
               </a>
             </form>
 
-            {/* Additional Authenticated Links */}
             {isAuthenticated && (
               <ul className="navbar-nav ms-auto d-flex flex-row mt-3 mt-lg-0">
                 <li className="nav-item text-center mx-2 mx-lg-1">
-                  <a className="nav-link" href="#!">
+                  <a className="nav-link d-flex align-items-center" href="#!">
                     <div>
                       <i className="fas fa-bell fa-lg mb-1"></i>
                       <span className="badge rounded-pill badge-notification bg-info">
@@ -122,7 +137,7 @@ const Navbar = ({ isAuthenticated, logout }) => {
             <ul className="navbar-nav ms-3">
               <li className="nav-item me-3">
                 <Link className="nav-link d-flex align-items-center" to="/">
-                  Home
+                  <i className="fas fa-home me-2"></i> Home
                 </Link>
               </li>
               {isAuthenticated ? authLinks() : guestLinks()}

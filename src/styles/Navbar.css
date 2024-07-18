@@ -1,0 +1,24 @@
+.navbar-nav .nav-item {
+  white-space: nowrap;
+}
+
+.navbar-nav .nav-link {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-nav .nav-link i {
+  margin-right: 8px;
+}
+
+.navbar-nav .nav-link span {
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 992px) {
+  .navbar-nav .nav-item {
+    width: 100%;
+    text-align: left;
+  }
+}
