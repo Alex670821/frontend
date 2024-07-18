@@ -107,16 +107,6 @@ const Navbar = ({ isAuthenticated, logout }) => {
           </Link>
         </li>
       )}
-      <li className="nav-item">
-        <a
-          className="nav-link d-flex align-items-center"
-          href="#!"
-          onClick={logoutUser}
-        >
-          Logout
-          <i className="fas fa-sign-out-alt ms-1"></i>
-        </a>
-      </li>
       {isActiveSubscription && (
         <Fragment>
           <li className="nav-item">
@@ -187,25 +177,6 @@ const Navbar = ({ isAuthenticated, logout }) => {
 
             <form className="d-flex align-items-center w-100 form-search">
               <div className="input-group">
-                <button
-                  className="btn btn-light dropdown-toggle shadow-0"
-                  type="button"
-                  data-mdb-toggle="dropdown"
-                  aria-expanded="false"
-                  style={{ paddingBottom: "0.4rem" }}
-                >
-                  All
-                </button>
-                <ul className="dropdown-menu dropdown-menu-dark fa-ul">
-                  <li>
-                    <Link className="dropdown-item" to="#">
-                      <span className="fa-li pe-2">
-                        <i className="fas fa-search"></i>
-                      </span>
-                      All
-                    </Link>
-                  </li>
-                </ul>
                 <input
                   type="search"
                   className="form-control"

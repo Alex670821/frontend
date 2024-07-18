@@ -1,0 +1,72 @@
+/* src/styles/Dashboard.css */
+.dashboard-container {
+    display: flex;
+    
+    height: 100vh;
+}
+
+.sidebar {
+    width: 250px;
+    background: #18181b;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-header {
+    padding: 20px;
+    text-align: center;
+    font-size: 1.5rem;
+    background: #1f1f23;
+}
+
+.sidebar .list-unstyled {
+    padding: 20px 0;
+    list-style: none;
+}
+
+.sidebar .list-unstyled li {
+    padding: 10px 20px;
+}
+
+.sidebar .list-unstyled li a,
+.sidebar .list-unstyled li button {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    width: 100%;
+    text-align: left;
+    border: none;
+    background: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.sidebar .list-unstyled li a:hover,
+.sidebar .list-unstyled li button:hover {
+    background: #2a2a2d;
+}
+
+.content {
+    flex: 1;
+    background: #f8f9fa;
+    padding: 20px;
+}
+
+.navbar {
+    background: #1f1f23;
+    padding: 10px 20px;
+}
+
+.navbar-brand {
+    color: #fff;
+}
+
+.nav-link {
+    color: #fff;
+}
+
+.nav-link.active {
+    background: #2a2a2d;
+    border-radius: 5px;
+}

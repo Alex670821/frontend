@@ -1,91 +1,143 @@
-import React from 'react';
+// src/containers/Dashboard.js
+import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { useHistory, Link } from 'react-router-dom';
+import { logout } from '../actions/auth';
+import NotificationModal from '../components/NotificationModal';
+import axios from 'axios';
+import '../styles/NotificationModal.css';
+import '../styles/Dashboard.css';
 
-const Dashboard = () => (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div className="container-fluid">
-            <a className="navbar-brand" href="#">Navbar</a>
-            <button className="navbar-toggler" type="button" data-mdb-toggle="collapse"
-                data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
-                <i className="fas fa-bars text-light"></i>
-            </button>
+const Dashboard = () => {
+    const [points, setPoints] = useState(0);
+    const [show, setShow] = useState(false);
+    const [message, setMessage] = useState('');
+    const [userName, setUserName] = useState('');
+    const [rewards, setRewards] = useState([]);
+    const dispatch = useDispatch();
+    const history = useHistory();
 
-            <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul className="navbar-nav me-auto d-flex flex-row mt-3 mt-lg-0">
-                    <li className="nav-item text-center mx-2 mx-lg-1">
-                        <a className="nav-link active" aria-current="page" href="#!">
-                            <div>
-                                <i className="fas fa-home fa-lg mb-1"></i>
-                            </div>
-                            Home
-                        </a>
+    const handleClose = () => setShow(false);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/auth/users/me/', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('access')}`,
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                setPoints(data.points.points);
+                setUserName(`${data.first_name} ${data.last_name}`);
+            } catch (err) {
+                console.error('Error fetching user data:', err);
+            }
+        };
+
+        const fetchRewards = async () => {
+            try {
+                const response = await axios.get('http://127.0.0.1:8000/rewards/rewards/', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('access')}`,
+                    },
+                });
+                setRewards(response.data);
+            } catch (err) {
+                console.error('Error fetching rewards:', err);
+            }
+        };
+
+        fetchUserData();
+        fetchRewards();
+    }, []);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setPoints(prevPoints => {
+                const newPoints = prevPoints + 10;
+                setMessage(`Ganaste 10 puntos. Total de puntos: ${newPoints}`);
+                setShow(true);
+                return newPoints;
+            });
+        }, 60000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    const redeemReward = async (rewardId, pointsCost) => {
+        if (points >= pointsCost) {
+            try {
+                const response = await axios.post(`http://127.0.0.1:8000/rewards/rewards/${rewardId}/redeem/`, {}, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('access')}`,
+                    },
+                });
+                if (response.status === 200) {
+                    setPoints(points - pointsCost);
+                }
+            } catch (err) {
+                console.error('Error redeeming reward:', err);
+            }
+        } else {
+            alert('No tienes suficientes puntos para canjear este premio.');
+        }
+    };
+
+    const handleLogout = () => {
+        dispatch(logout(points));
+        history.push('/');
+    };
+
+    return (
+        <div className="dashboard-container">
+            <nav className="sidebar">
+                <div className="sidebar-header">
+                    <h3>Menu</h3>
+                </div>
+                <ul className="list-unstyled components">
+                    <li>
+                        <Link to="/">Home</Link>
                     </li>
-                    <li className="nav-item text-center mx-2 mx-lg-1">
-                        <a className="nav-link" href="#!">
-                            <div>
-                                <i className="far fa-envelope fa-lg mb-1"></i>
-                                <span className="badge rounded-pill badge-notification bg-danger">11</span>
-                            </div>
-                            Link
-                        </a>
+                    <li>
+                        <Link to="/messages">Crear Directos</Link>
                     </li>
-                    <li className="nav-item text-center mx-2 mx-lg-1">
-                        <a className="nav-link disabled" aria-disabled="true" href="#!">
-                            <div>
-                                <i className="far fa-envelope fa-lg mb-1"></i>
-                                <span className="badge rounded-pill badge-notification bg-warning">11</span>
-                            </div>
-                            Disabled
-                        </a>
+                    <li>
+                        <Link to="/dashboard">Puntos</Link>
                     </li>
-                    <li className="nav-item dropdown text-center mx-2 mx-lg-1">
-                        <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                            data-mdb-toggle="dropdown" aria-expanded="false">
-                            <div>
-                                <i className="far fa-envelope fa-lg mb-1"></i>
-                                <span className="badge rounded-pill badge-notification bg-primary">11</span>
-                            </div>
-                            Dropdown
-                        </a>
-                        <ul className="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
-                            <li><a className="dropdown-item" href="#">Action</a></li>
-                            <li><a className="dropdown-item" href="#">Another action</a></li>
-                            <li><hr className="dropdown-divider" /></li>
-                            <li><a className="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
+                    <li>
+                        <Link to="/profile">Profile</Link>
+                    </li>
+                    <li>
+                        <button onClick={handleLogout}>Logout</button>
                     </li>
                 </ul>
-
-                <ul className="navbar-nav ms-auto d-flex flex-row mt-3 mt-lg-0">
-                    <li className="nav-item text-center mx-2 mx-lg-1">
-                        <a className="nav-link" href="#!">
-                            <div>
-                                <i className="fas fa-bell fa-lg mb-1"></i>
-                                <span className="badge rounded-pill badge-notification bg-info">11</span>
+            </nav>
+            <div className="content">
+                <div className="container mt-5">
+                    <h1>Puntos</h1>
+                    <p>Total de puntos: {points}</p>
+                    <div className="rewards-list">
+                        {rewards.map(reward => (
+                            <div key={reward.id} className="reward-card">
+                                <img src={`${reward.image}`} alt={reward.name} className="reward-image" />
+                                <h2>{reward.name}</h2>
+                                <p>{reward.description}</p>
+                                <p>Cost: {reward.points_cost} puntos</p>
+                                <button onClick={() => redeemReward(reward.id, reward.points_cost)}>
+                                    Canjear
+                                </button>
                             </div>
-                            Messages
-                        </a>
-                    </li>
-                    <li className="nav-item text-center mx-2 mx-lg-1">
-                        <a className="nav-link" href="#!">
-                            <div>
-                                <i className="fas fa-globe-americas fa-lg mb-1"></i>
-                                <span className="badge rounded-pill badge-notification bg-success">11</span>
-                            </div>
-                            News
-                        </a>
-                    </li>
-                </ul>
-
-                <form className="d-flex input-group w-auto ms-lg-3 my-3 my-lg-0">
-                    <input type="search" className="form-control" placeholder="Search" aria-label="Search" />
-                    <button className="btn btn-primary" type="button" data-mdb-ripple-color="dark">
-                        Search
-                    </button>
-                </form>
+                        ))}
+                    </div>
+                </div>
+                <NotificationModal show={show} handleClose={handleClose} message={message} />
             </div>
         </div>
-    </nav>
-);
+    );
+};
 
 export default Dashboard;
